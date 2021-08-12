@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public GameObject laserPrefab;
+    
+    [SerializeField] private Transform _firePosition;
     [SerializeField] private float _speed = 10f;
     
     private Vector2 _positionMin = new Vector2(-10f, -4f);
@@ -12,14 +15,23 @@ public class Player : MonoBehaviour
 
     private float _inputHorizontal;
     private float _inputVertical;
-
+    private ObjectPooler _objectPooler;
     private void Start()
     {
+        _objectPooler = ObjectPooler.Instance;
         transform.position = new Vector3(0, 0, 0);
     }
 
     // Update is called once per frame
     void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _objectPooler.SpawnFromPool("Laser", _firePosition.position, _firePosition.rotation);
+        }
+    }
+
+    private void FixedUpdate()
     {
         NextPosition();
         CheckBoundsPosition();
@@ -31,12 +43,12 @@ public class Player : MonoBehaviour
         _inputVertical = Input.GetAxis("Vertical");
 
         Vector3 nextPostion = new Vector3(_inputHorizontal,_inputVertical,0);
-        nextPostion *= Time.deltaTime;
+        nextPostion *= Time.fixedDeltaTime;
         nextPostion *= _speed;
         
         transform.Translate(nextPostion);
     }
-
+    
     void CheckBoundsPosition()
     {
         Vector3 position = transform.position;
