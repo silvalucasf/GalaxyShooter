@@ -6,8 +6,12 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
     [SerializeField] private float _speed = 15f;
+    [SerializeField] private float _shootRange = 10f;
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.up * (_speed * Time.deltaTime));
+        if (transform.position.y < _shootRange)
+        {
+            transform.Translate(Vector3.up * (_speed * Time.deltaTime));
+        }
     }
 }

@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public GameObject laserPrefab;
     
     [SerializeField] private Transform _firePosition;
+    [SerializeField] private float _fireRate = 0.5f;
     [SerializeField] private float _speed = 10f;
     
     private Vector2 _positionMin = new Vector2(-10f, -4f);
@@ -15,9 +16,12 @@ public class Player : MonoBehaviour
 
     private float _inputHorizontal;
     private float _inputVertical;
+
+    private float _nextFire;
     private ObjectPooler _objectPooler;
     private void Start()
     {
+        _nextFire = 0;
         _objectPooler = ObjectPooler.Instance;
         transform.position = new Vector3(0, 0, 0);
     }
@@ -25,9 +29,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
-            _objectPooler.SpawnFromPool("Laser", _firePosition.position, _firePosition.rotation);
+            if (Time.time > _nextFire)
+            {
+                _objectPooler.SpawnFromPool("Laser", _firePosition.position, _firePosition.rotation);
+                _nextFire = Time.time + _fireRate;
+            }
         }
     }
 
@@ -63,4 +71,5 @@ public class Player : MonoBehaviour
 
         transform.position = position;
     }
+    
 }
