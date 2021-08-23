@@ -25,7 +25,6 @@ public class ObjectPooler : MonoBehaviour
     }
     #endregion
     
-    
     private void Start()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -42,31 +41,13 @@ public class ObjectPooler : MonoBehaviour
             {
                 GameObject obj = Instantiate(pool.prefab, poolContainer.transform);
                 obj.SetActive(false);
-                objectPool. Enqueue(obj);
+                objectPool.Enqueue(obj);
             }
             
             poolDictionary.Add(pool.tag, objectPool);
         }
     }
     
-    // private void LateUpdate()
-    // {
-    //     foreach (Pool pool in pools)
-    //     {
-    //         Debug.Log(pool.tag);
-    //         
-    //         GameObject objectToCheck = poolDictionary[pool.tag].Dequeue();
-    //         Vector3 position = objectToCheck.transform.position;
-    //         
-    //         if (position.y > 10f)
-    //         {
-    //             objectToCheck.SetActive(false);
-    //         }
-    //
-    //         poolDictionary[pool.tag].Enqueue(objectToCheck);
-    //     }
-    // }
-
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion quaternion)
     {
         if (!poolDictionary.ContainsKey(tag))
@@ -74,32 +55,38 @@ public class ObjectPooler : MonoBehaviour
             Debug.LogWarning("Pool with tag" + tag + " doesn't exist");
             return null;
         }
+        Queue<GameObject> pool = poolDictionary[tag];
+        GameObject objectToSpawn = pool.Dequeue();
         
-        GameObject objectToSpawn = poolDictionary[tag].Dequeue();
-        objectToSpawn.SetActive(true);
-        objectToSpawn.transform.position = position;
-        objectToSpawn.transform.rotation = quaternion;
-        
-        poolDictionary[tag].Enqueue(objectToSpawn);
+        if (objectToSpawn.activeSelf == true)
+        {
+            NewPoolObject(tag, position, quaternion);
+            Debug.Log(objectToSpawn);
+        }
+        else
+        {
+            objectToSpawn.SetActive(true);
+            objectToSpawn.transform.position = position;
+            objectToSpawn.transform.rotation = quaternion;
+        }
+        pool.Enqueue(objectToSpawn);
         return objectToSpawn;
     }
-
     
-    void NewPoolObject (Pool pool, Vector3 position, Quaternion quaternion)
+    GameObject NewPoolObject (String tag, Vector3 position, Quaternion quaternion)
     {
-        GameObject obj = Instantiate(pool.prefab);
-        
+        Pool pool = FindPool(tag);
+        GameObject obj = Instantiate(pool.prefab, transform.Find(tag));
         obj.SetActive(true);
         obj.transform.position = position;
         obj.transform.rotation = quaternion;
-        
-        poolDictionary[pool.tag].Enqueue(obj);
+        poolDictionary[tag].Enqueue(obj);
+        return obj;
     }
     
-    Pool GetPool(string tag)
+    Pool FindPool(string tag)
     {
         Pool poolRef = null;
-        
         foreach (Pool pool in pools)
         {
             if (pool.tag.Equals(tag))
@@ -110,5 +97,4 @@ public class ObjectPooler : MonoBehaviour
         }
         return poolRef;
     }
-    
 }
