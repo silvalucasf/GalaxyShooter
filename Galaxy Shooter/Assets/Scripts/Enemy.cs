@@ -13,8 +13,8 @@ public class Enemy : MonoBehaviour
     {
         transform.Translate(Vector3.up * (Time.deltaTime * -_speed));
     }
-
-    private void OnTriggerEnter(Collider other)
+    
+    private void OnTriggerEnter2D(Collider2D other)
     {
         switch (other.tag)
         {
