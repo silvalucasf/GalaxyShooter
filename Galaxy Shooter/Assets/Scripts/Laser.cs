@@ -13,5 +13,9 @@ public class Laser : MonoBehaviour
         {
             transform.Translate(Vector3.up * (_speed * Time.deltaTime));
         }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform _firePosition;
     [SerializeField] private float _fireRate = 0.5f;
     [SerializeField] private float _speed = 10f;
+    [SerializeField] private int _lives = 3;
     
     private Vector2 _positionMin = new Vector2(-10f, -4f);
     private Vector2 _positionMax = new Vector2(10f, 6f);
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour
 
     private float _nextFire;
     private ObjectPooler _objectPooler;
+    
     private void Start()
     {
         _nextFire = 0;
@@ -71,5 +73,12 @@ public class Player : MonoBehaviour
 
         transform.position = position;
     }
-    
+
+    public void Damage(int damage)
+    {
+        _lives -= damage;
+        
+        if(_lives < 1)
+            Destroy(this.gameObject);
+    }
 }
