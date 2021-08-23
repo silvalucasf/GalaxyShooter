@@ -25,6 +25,7 @@ public class ObjectPooler : MonoBehaviour
     }
     #endregion
     
+    
     private void Start()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -33,11 +34,15 @@ public class ObjectPooler : MonoBehaviour
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
+            GameObject poolContainer = new GameObject();
+            poolContainer.name = pool.tag;
+            poolContainer.transform.parent = transform;
+            
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.prefab);
+                GameObject obj = Instantiate(pool.prefab, poolContainer.transform);
                 obj.SetActive(false);
-                objectPool.Enqueue(obj);
+                objectPool. Enqueue(obj);
             }
             
             poolDictionary.Add(pool.tag, objectPool);

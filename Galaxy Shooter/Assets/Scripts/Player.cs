@@ -20,12 +20,25 @@ public class Player : MonoBehaviour
 
     private float _nextFire;
     private ObjectPooler _objectPooler;
+    private SpawnManager _spawnManager;
     
     private void Start()
     {
         _nextFire = 0;
-        _objectPooler = ObjectPooler.Instance;
         transform.position = new Vector3(0, 0, 0);
+        
+        _objectPooler = ObjectPooler.Instance;
+        if (_objectPooler == null)
+        {
+            Debug.LogError("The ObjectPooler reference on player is NULL!!");
+        }
+        
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("The SpawnManager reference on player is NULL!!");
+        }
+        
     }
 
     // Update is called once per frame
@@ -77,8 +90,11 @@ public class Player : MonoBehaviour
     public void Damage(int damage)
     {
         _lives -= damage;
-        
-        if(_lives < 1)
+
+        if (_lives < 1)
+        {
+            _spawnManager.IsSpawning = false;
             Destroy(this.gameObject);
+        }
     }
 }
