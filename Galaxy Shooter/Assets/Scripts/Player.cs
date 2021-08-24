@@ -7,7 +7,10 @@ public class Player : MonoBehaviour
 {
     public GameObject laserPrefab;
     
-    [SerializeField] private Transform _firePosition;
+    [SerializeField] private Transform _firePosition01;
+    [SerializeField] private Transform _firePosition02;
+    [SerializeField] private Transform _firePosition03;
+
     [SerializeField] private float _fireRate = 0.5f;
     [SerializeField] private float _speed = 10f;
     [SerializeField] private int _lives = 3;
@@ -24,9 +27,6 @@ public class Player : MonoBehaviour
     
     private void Start()
     {
-        _nextFire = 0;
-        transform.position = new Vector3(0, 0, 0);
-        
         _objectPooler = ObjectPooler.Instance;
         if (_objectPooler == null)
         {
@@ -38,17 +38,17 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The SpawnManager reference on player is NULL!!");
         }
-        
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (Input.GetKey(KeyCode.Space))
         {
             if (Time.time > _nextFire)
             {
-                _objectPooler.SpawnFromPool("Laser", _firePosition.position, _firePosition.rotation);
+                _objectPooler.SpawnFromPool("Triple_Shot", transform.position, new Quaternion());
+                // _objectPooler.SpawnFromPool("Laser", _firePosition02.position, _firePosition02.rotation);
+                // _objectPooler.SpawnFromPool("Laser", _firePosition03.position, _firePosition03.rotation);
                 _nextFire = Time.time + _fireRate;
             }
         }
@@ -79,18 +79,20 @@ public class Player : MonoBehaviour
         position.y = Mathf.Clamp(position.y, _positionMin.y, _positionMax.y);
 
         if (position.x > _positionMax.x)
+        {
             position.x = _positionMin.x;
-        
+        }
         else if (position.x < _positionMin.x)
+        {
             position.x = _positionMax.x;
-
+        }
+        
         transform.position = position;
     }
 
     public void Damage(int damage)
     {
         _lives -= damage;
-
         if (_lives < 1)
         {
             _spawnManager.IsSpawning = false;

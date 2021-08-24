@@ -61,7 +61,6 @@ public class ObjectPooler : MonoBehaviour
         if (objectToSpawn.activeSelf == true)
         {
             NewPoolObject(tag, position, quaternion);
-            Debug.Log(objectToSpawn);
         }
         else
         {
